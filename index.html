@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmniPulse Terminal — Indian & Worldwide Market Sentiment & Live Opening Cue</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-[#070B14] text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP LIVE COMMAND BAR TICKER -->
+  <header class="sticky top-0 z-50 bg-[#0A0F1D]/95 backdrop-blur-md border-b border-slate-800/80">
+    <!-- Top Ribbon: Live Current Levels Across All Key Indian & Global Indices -->
+    <div class="border-b border-slate-800/70 bg-[#060913] px-3 py-1.5 overflow-x-auto no-scrollbar">
+      <div id="top-command-ticker" class="flex items-center space-x-5 min-w-max text-xs font-mono">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </div>
+
+    <!-- Main Navigation & Live IST Market Session Status Bar -->
+    <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-blue-600 to-emerald-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-mono font-bold text-lg">
+          ⚡
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg md:text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+              DALAL STREET &amp; GLOBAL SENTIMENT TERMINAL
+            </h1>
+            <span class="px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full">
+              LIVE DAILY SYNC
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">
+            Real-Time GIFT NIFTY Next-Day Opening Cue • 6-Source Sentiment Engine (News, YouTube, X, Instagram, Reddit, Web)
+          </p>
+        </div>
+      </div>
+
+      <!-- Live Clock, Market Session Status & Daily Auto-Sync Controls -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Market Session Status Pill -->
+        <div id="market-status-pill" class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs font-mono">
+          <span id="market-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <div>
+            <div id="market-status-label" class="font-semibold text-slate-100">CHECKING SESSION...</div>
+            <div id="market-countdown-label" class="text-[11px] text-slate-400">Next 9:15 AM IST Bell: --:--:--</div>
+          </div>
+        </div>
+
+        <!-- Live IST Clock -->
+        <div class="px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs font-mono">
+          <div class="text-[10px] uppercase tracking-wider text-slate-400">Indian Standard Time (IST)</div>
+          <div id="live-ist-clock" class="text-sm font-bold text-indigo-300">--:--:-- IST</div>
+        </div>
+
+        <!-- Daily Sync Button & Countdown -->
+        <button id="sync-now-btn" onclick="triggerLiveMarketSync('MANUAL_REFRESH')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 transition text-xs font-semibold flex items-center gap-2 shadow-lg shadow-indigo-600/25 cursor-pointer">
+          <span id="sync-spinner" class="inline-block">🔄</span>
+          <span>Sync Live Feeds</span>
+          <span id="next-sync-timer" class="font-mono text-[11px] bg-indigo-950/70 px-1.5 py-0.5 rounded text-indigo-200">60s</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-[1600px] mx-auto px-4 py-6 space-y-6">
+
+    <!-- SECTION 1: NEXT-DAY NIFTY 50 OPENING CUE & GIFT NIFTY SPOTLIGHT -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <!-- GIFT NIFTY Live Settlement & Intraday Card (5 cols) -->
+      <div class="lg:col-span-5 rounded-2xl bg-gradient-to-br from-[#10192E] via-[#0D1425] to-[#090E1A] border border-indigo-500/30 p-5 shadow-xl relative overflow-hidden">
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-mono text-[11px] font-semibold">NSE IFSC • GIFT CITY</span>
+              <span id="gift-session-badge" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono text-[11px]">WEEKEND SETTLEMENT</span>
+            </div>
+            <h2 class="text-xl font-bold mt-1.5 text-white flex items-center gap-2">
+              GIFT NIFTY (CURRENT LEVEL)
+            </h2>
+          </div>
+          <div class="text-right font-mono">
+            <div id="gift-spotlight-price" class="text-3xl font-extrabold text-rose-400">22,535.50</div>
+            <div id="gift-spotlight-change" class="text-xs font-semibold text-rose-400">▼ -72.50 (-0.32%)</div>
+          </div>
+        </div>
+
+        <p id="gift-spotlight-summary" class="text-xs text-slate-300 leading-relaxed bg-slate-900/70 border border-slate-800 rounded-xl p-3 mb-4">
+          GIFT Nifty is currently at <strong class="text-white">22,535.50</strong>, down by <strong class="text-rose-400">72.50 points (-0.32%)</strong>. The index opened the session at <strong class="text-slate-100">22,869.50</strong>, hitting an intraday high of <strong class="text-emerald-400">22,874.00</strong> and a low of <strong class="text-rose-400">22,445.00</strong>.
+        </p>
+
+        <!-- Key Session Metrics Grid -->
+        <div class="grid grid-cols-4 gap-2.5 font-mono text-xs mb-4">
+          <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+            <div class="text-[10px] text-slate-400 uppercase">Open</div>
+            <div id="gift-open-val" class="font-bold text-slate-100 mt-0.5">22,869.50</div>
+          </div>
+          <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+            <div class="text-[10px] text-slate-400 uppercase">Intraday High</div>
+            <div id="gift-high-val" class="font-bold text-emerald-400 mt-0.5">22,874.00</div>
+          </div>
+          <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+            <div class="text-[10px] text-slate-400 uppercase">Intraday Low</div>
+            <div id="gift-low-val" class="font-bold text-rose-400 mt-0.5">22,445.00</div>
+          </div>
+          <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+            <div class="text-[10px] text-slate-400 uppercase">NIFTY 50 Close</div>
+            <div id="nifty-close-val" class="font-bold text-indigo-300 mt-0.5">22,600.00</div>
+          </div>
+        </div>
+
+        <!-- Intraday Range Bar -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-[11px] font-mono text-slate-400">
+            <span>Low: 22,445.00</span>
+            <span class="text-indigo-300">Current: 22,535.50 (21.1% of Range)</span>
+            <span>High: 22,874.00</span>
+          </div>
+          <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div id="gift-range-bar" class="h-full bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 rounded-full" style="width: 21.1%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next-Day NIFTY 50 Opening Cue & Multi-Factor Prediction Engine (7 cols) -->
+      <div class="lg:col-span-7 rounded-2xl bg-gradient-to-br from-[#131829] via-[#0E1322] to-[#090D18] border border-amber-500/30 p-5 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono text-xs font-bold">
+                🎯 NEXT-DAY 9:15 AM IST NIFTY 50 OPENING CUE
+              </span>
+              <span id="cue-sync-timestamp" class="text-[11px] font-mono text-slate-400">Synced with GIFT NIFTY &amp; Global Handover</span>
+            </div>
+            <div id="opening-cue-badge" class="px-3 py-1 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 font-mono text-xs font-bold">
+              CAUTIOUS / SOFT GAP-DOWN CUE (-64.50 PTS)
+            </div>
+          </div>
+
+          <!-- 3-Column Opening Projection Metrics -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+              <div class="text-[11px] text-slate-400 uppercase font-mono">GIFT vs NIFTY 50 Basis Spread</div>
+              <div id="cue-spread-value" class="text-2xl font-extrabold font-mono text-rose-400 mt-1">-64.50 pts (-0.29%)</div>
+              <div class="text-[11px] text-slate-400 mt-1">GIFT 22,535.50 vs NIFTY Spot 22,600.00</div>
+            </div>
+
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+              <div class="text-[11px] text-slate-400 uppercase font-mono">Implied 9:15 AM Opening Zone</div>
+              <div id="cue-opening-band" class="text-2xl font-extrabold font-mono text-amber-300 mt-1">22,505 – 22,555</div>
+              <div class="text-[11px] text-slate-400 mt-1">Expected Cash Open Midpoint: <span class="text-white font-mono">22,530</span></div>
+            </div>
+
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+              <div class="text-[11px] text-slate-400 uppercase font-mono">Composite Opening Bias Score</div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span id="cue-composite-score" class="text-2xl font-extrabold font-mono text-amber-400">44 / 100</span>
+                <span id="cue-composite-label" class="text-xs font-semibold text-rose-400">Mild Bearish / Consolidation</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-1">50% GIFT Spread • 30% Global • 20% Social</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actionable Next-Day Trading Levels & Multi-Factor Breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-950/70 border border-slate-800/90 rounded-xl p-3.5 text-xs">
+          <div class="space-y-1.5">
+            <div class="font-semibold text-indigo-300 uppercase tracking-wider font-mono text-[11px]">📍 Key NIFTY 50 Levels for Next Session (9:15 AM)</div>
+            <div class="flex justify-between font-mono">
+              <span class="text-slate-400">Immediate Support (S1 / S2):</span>
+              <span class="text-emerald-400 font-semibold">22,445.00 / 22,372.00</span>
+            </div>
+            <div class="flex justify-between font-mono">
+              <span class="text-slate-400">Immediate Resistance (R1 / R2):</span>
+              <span class="text-rose-400 font-semibold">22,687.65 / 22,787.25</span>
+            </div>
+            <div class="flex justify-between font-mono">
+              <span class="text-slate-400">Last Session Cash Range:</span>
+              <span class="text-slate-200">22,372.00 – 22,787.25 (Prev Close 22,687.65)</span>
+            </div>
+          </div>
+
+          <div class="space-y-1.5 border-t md:border-t-0 md:border-l border-slate-800 pt-2 md:pt-0 md:pl-3">
+            <div class="font-semibold text-amber-300 uppercase tracking-wider font-mono text-[11px]">🧠 Strategy Cue &amp; Sentiment Readout</div>
+            <p id="cue-strategy-text" class="text-slate-300 leading-relaxed">
+              With GIFT NIFTY settling at <strong class="text-white">22,535.50 (-0.32%)</strong> and NIFTY 50 at <strong class="text-white">22,600.00 (-0.39%)</strong>, expect a <strong class="text-amber-300">soft-to-flat opening near 22,520–22,550</strong> at 9:15 AM IST. Watch <strong class="text-emerald-400">22,445</strong> (GIFT low) and <strong class="text-emerald-400">22,372</strong> (NIFTY cash low) for dip-buying support; reclaiming <strong class="text-indigo-300">22,688</strong> flips intraday bias bullish.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: 6-PLATFORM WORLDWIDE & INDIAN SENTIMENT INGESTION PULSE -->
+    <section class="rounded-2xl bg-[#0C1222] border border-slate-800/90 p-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📡 6-SOURCE GLOBAL &amp; DALAL STREET SENTIMENT INGESTION PULSE</span>
+          </h2>
+          <p class="text-xs text-slate-400">
+            Real-time sentiment aggregation across Financial News, YouTube, X (FinTwit), Instagram Reels, Reddit, and Web Search Trends
+          </p>
+        </div>
+        <div class="flex items-center gap-2 font-mono text-xs">
+          <span class="text-slate-400">Global Composite Mood:</span>
+          <span id="global-composite-pill" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+            51% NEUTRAL-CAUTIOUS
+          </span>
+        </div>
+      </div>
+
+      <div id="platform-pulse-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- SECTION 3: FILTER CONTROLS & REGION TABS -->
+    <section class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-2" id="region-filter-tabs">
+        <button onclick="setRegionFilter('ALL')" data-region="ALL" class="region-tab active-tab px-4 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer">
+          🌐 ALL MARKETS (16)
+        </button>
+        <button onclick="setRegionFilter('INDIA')" data-region="INDIA" class="region-tab px-4 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer">
+          🇮🇳 INDIA • NSE / BSE / GIFT (6)
+        </button>
+        <button onclick="setRegionFilter('US')" data-region="US" class="region-tab px-4 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer">
+          🇺🇸 US • WALL STREET (4)
+        </button>
+        <button onclick="setRegionFilter('ASIA_EU')" data-region="ASIA_EU" class="region-tab px-4 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer">
+          🌏 ASIA &amp; EUROPE (4)
+        </button>
+        <button onclick="setRegionFilter('COMMODITIES')" data-region="COMMODITIES" class="region-tab px-4 py-2 rounded-xl text-xs font-mono font-bold transition cursor-pointer">
+          🪙 GOLD &amp; CRUDE (2)
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <input
+          id="asset-search-input"
+          type="text"
+          oninput="renderMarketCards()"
+          placeholder="Search index or ticker (e.g., GIFT, NIFTY, S&P, NIKKEI)..."
+          class="bg-slate-900/90 border border-slate-700/80 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-64 font-mono"
+        />
+      </div>
+    </section>
+
+    <!-- SECTION 4: LIVE MARKET CARDS GRID -->
+    <section id="market-cards-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Populated dynamically by app.js -->
+    </section>
+
+    <!-- SECTION 5: MULTI-SOURCE SOCIAL & NEWS STREAM -->
+    <section class="rounded-2xl bg-[#0C1222] border border-slate-800/90 p-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="text-base font-bold text-white">💬 LIVE MULTI-PLATFORM MARKET SENTIMENT STREAM</h2>
+          <p class="text-xs text-slate-400">Latest parsed signals from Moneycontrol, Economic Times, YouTube Finance, X/Twitter, Reddit r/IndianStreetBets &amp; r/wallstreetbets</p>
+        </div>
+        <span id="feed-last-updated" class="text-xs font-mono text-indigo-300">Updated: Just now</span>
+      </div>
+      <div id="live-social-stream" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-[1600px] mx-auto px-4 py-6 border-t border-slate-800/80 text-center text-xs text-slate-500 font-mono">
+    OmniPulse Indian &amp; Worldwide Market Sentiment Terminal • Calibrated with Official NSE IFSC GIFT NIFTY (22,535.50) &amp; NIFTY 50 (22,600.00) Benchmarks • Auto-Sync Enabled
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

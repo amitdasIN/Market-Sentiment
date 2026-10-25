@@ -1,0 +1,21 @@
+{
+  "name": "omnipulse-indian-worldwide-market-sentiment-terminal",
+  "version": "2.0.0",
+  "description": "Real-time Indian (NSE/BSE/GIFT Nifty) & Worldwide Stock Market Sentiment Terminal with Next-Day 9:15 AM IST NIFTY 50 Opening Cue Engine.",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 server.py",
+    "serve": "npx serve ."
+  },
+  "keywords": [
+    "gift-nifty",
+    "nifty-50",
+    "sensex",
+    "bank-nifty",
+    "stock-market-sentiment",
+    "dalal-street",
+    "global-indices"
+  ],
+  "author": "OmniPulse",
+  "license": "MIT"
+}
